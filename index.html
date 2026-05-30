@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colombia 2026 — Análisis de Candidatos Presidenciales</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0a0e;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #252530;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --accent: #f0c040;
+    --red: #e05050;
+    --green: #40c080;
+    --blue: #4090e0;
+    --orange: #e07840;
+
+    /* Candidate colors */
+    --cepeda: #c04040;
+    --paloma: #4060c0;
+    --espriella: #e07030;
+    --fajardo: #3090a0;
+    --claudia: #a040b0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 40px 60px 30px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+    opacity: 0.3;
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .header-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .header-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex; gap: 24px; flex-wrap: wrap;
+  }
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 14px 20px;
+    border: none; border-right: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--surface); }
+  .nav-btn.active { color: var(--accent); background: var(--surface2); }
+
+  /* Layout */
+  .main { max-width: 1200px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* Sections */
+  .section { display: none; padding: 40px 0; }
+  .section.active { display: block; }
+
+  /* Context banner */
+  .context-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    border-radius: 2px;
+  }
+  .context-banner h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .context-banner p { color: var(--muted); font-size: 13px; }
+  .context-banner strong { color: var(--text); }
+
+  /* Candidate card */
+  .candidate-section {
+    margin-bottom: 60px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .candidate-header {
+    display: flex; align-items: center; gap: 20px;
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .candidate-badge {
+    width: 10px; height: 40px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .candidate-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1.1;
+  }
+  .candidate-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .candidate-score {
+    margin-left: auto;
+    text-align: right;
+  }
+  .score-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .score-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .candidate-body { padding: 28px; }
+
+  /* Section title inside candidate */
+  .sec-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Summary */
+  .summary-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    border-radius: 2px;
+    font-size: 13px;
+    color: #c0c0d0;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  /* Tables */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+  }
+  .data-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    vertical-align: top;
+    color: #c0c0d0;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td:first-child { color: var(--text); font-weight: 500; }
+  .data-table .area { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); }
+
+  /* Viability tags */
+  .tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .tag-green { background: rgba(64,192,128,0.15); color: var(--green); border: 1px solid rgba(64,192,128,0.3); }
+  .tag-yellow { background: rgba(240,192,64,0.15); color: var(--accent); border: 1px solid rgba(240,192,64,0.3); }
+  .tag-orange { background: rgba(224,120,64,0.15); color: var(--orange); border: 1px solid rgba(224,120,64,0.3); }
+  .tag-red { background: rgba(224,80,80,0.15); color: var(--red); border: 1px solid rgba(224,80,80,0.3); }
+  .tag-darkred { background: rgba(160,40,40,0.2); color: #ff6060; border: 1px solid rgba(160,40,40,0.4); }
+
+  /* Score grid */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .score-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    border-radius: 2px;
+  }
+  .score-item-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .score-item-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .score-item-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .score-item-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  /* Probability */
+  .prob-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+    font-size: 12.5px;
+  }
+  .prob-label { width: 220px; color: var(--muted); flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .prob-bar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .prob-fill { height: 100%; border-radius: 3px; }
+  .prob-val { width: 40px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text); }
+
+  /* Obstacles */
+  .obstacle-list { list-style: none; margin-bottom: 28px; }
+  .obstacle-list li {
+    padding: 8px 12px 8px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+    color: #b0b0c0;
+    position: relative;
+  }
+  .obstacle-list li::before {
+    content: '▸';
+    position: absolute; left: 8px;
+    color: var(--red);
+    font-size: 10px;
+  }
+
+  /* Notes */
+  .note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 10px 14px;
+    background: var(--surface2);
+    border-left: 2px solid var(--border);
+    margin-bottom: 12px;
+    border-radius: 0 2px 2px 0;
+  }
+  .note.warn { border-left-color: var(--orange); }
+  .note.danger { border-left-color: var(--red); }
+  .note.good { border-left-color: var(--green); }
+
+  /* Comparison section */
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 12.5px;
+  }
+  .comparison-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .comparison-table th:first-child { text-align: left; }
+  .comparison-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+  }
+  .comparison-table tr:nth-child(even) td { background: var(--surface2); }
+  .comparison-table td:first-child { text-align: left; font-weight: 600; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+
+  /* Verdict cards */
+  .verdict-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .verdict-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 22px;
+    border-radius: 2px;
+  }
+  .verdict-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .verdict-card-winner {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .verdict-card-why { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Ranking */
+  .ranking-list { list-style: none; }
+  .ranking-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 4px;
+    border-radius: 2px;
+    transition: background 0.15s;
+  }
+  .ranking-item:hover { background: var(--surface2); }
+  .ranking-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--border);
+    width: 32px;
+    flex-shrink: 0;
+  }
+  .ranking-name { font-weight: 600; font-size: 15px; flex: 1; }
+  .ranking-reason { font-size: 12px; color: var(--muted); }
+  .ranking-score {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    width: 44px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Sources */
+  .sources { 
+    margin-top: 40px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .sources h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .sources ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .sources li {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 0;
+  }
+  .sources li a { color: var(--blue); text-decoration: none; }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  /* Coherence coherencia block */
+  .coherence-block {
+    display: flex; align-items: flex-start; gap: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+  .coherence-score {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 60px;
+  }
+  .coherence-text { font-size: 13px; color: #b0b0c0; line-height: 1.6; }
+  .coherence-text strong { color: var(--text); }
+
+  /* Media query */
+  @media (max-width: 700px) {
+    .header { padding: 24px 20px; }
+    .header h1 { font-size: 28px; }
+    .main { padding: 0 16px 60px; }
+    .candidate-header { flex-wrap: wrap; }
+    .candidate-score { margin-left: 0; }
+    .score-grid { grid-template-columns: 1fr 1fr; }
+    .verdict-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-tag">◈ Análisis Electoral Independiente — Primera Vuelta 31 Mayo 2026</div>
+    <h1>Colombia 2026<br>Candidatos Presidenciales</h1>
+    <div class="header-meta">
+      <span>⚑ 5 candidatos analizados</span>
+      <span>◉ Fuentes: CNE · La Silla Vacía · CARF · El Espectador · Razón Pública · El Colombiano · Semana · Bloomberg Línea · Infobae · CNN · Colombiacheck</span>
+      <span>⊠ Fecha: Mayo 30, 2026</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('context')">Contexto Fiscal</button>
+  <button class="nav-btn" onclick="showSection('cepeda')">Iván Cepeda</button>
+  <button class="nav-btn" onclick="showSection('paloma')">Paloma Valencia</button>
+  <button class="nav-btn" onclick="showSection('espriella')">De la Espriella</button>
+  <button class="nav-btn" onclick="showSection('fajardo')">Sergio Fajardo</button>
+  <button class="nav-btn" onclick="showSection('claudia')">Claudia López</button>
+  <button class="nav-btn" onclick="showSection('comparacion')">Comparación Final</button>
+</nav>
+
+<div class="main">
+
+<!-- ══ CONTEXTO FISCAL ══ -->
+<div class="section active" id="context">
+  <div class="context-banner">
+    <h3>⚠ Marco Fiscal Obligatorio — Leer Primero</h3>
+    <p>Toda promesa debe evaluarse contra esta restricción: <strong>el próximo gobierno hereda el déficit fiscal más severo en 30 años.</strong> El CARF estima un faltante de <strong>$31–32 billones</strong> solo para 2026. El déficit primario de 2025 fue 3.5% del PIB. La deuda pública proyectada: <strong>58.9–60.5% del PIB</strong>. El ajuste requerido para estabilizar la deuda: <strong>3.5–4.5 puntos del PIB</strong> — el mayor de la historia reciente. Tasas de interés de deuda: ~14%. <em>En este contexto, cualquier promesa de gasto adicional no financiada es fiscalmente irresponsable.</em></p>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Indicador Fiscal</th>
+        <th>Cifra</th>
+        <th>Implicación para el Próximo Gobierno</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Déficit primario 2025</td>
+        <td>3.5% PIB (más alto en 30 años)</td>
+        <td>Herencia insostenible. No hay espacio para nuevo gasto.</td>
+      </tr>
+      <tr>
+        <td>Faltante presupuestal 2026</td>
+        <td>$31–32 billones (CARF)</td>
+        <td>Ajuste inmediato obligatorio antes de cualquier nueva política.</td>
+      </tr>
+      <tr>
+        <td>Deuda pública proyectada</td>
+        <td>58.9–60.5% PIB</td>
+        <td>Trayectoria insostenible si no se actúa. Riesgo de default señalado por CARF.</td>
+      </tr>
+      <tr>
+        <td>Ajuste requerido</td>
+        <td>3.5–4.5 puntos del PIB</td>
+        <td>El mayor ajuste de la historia reciente. Equivale a recorte masivo o nueva tributación.</td>
+      </tr>
+      <tr>
+        <td>Tasa interés deuda</td>
+        <td>~14%</td>
+        <td>Costo altísimo. Endeudarse más es peligroso.</td>
+      </tr>
+      <tr>
+        <td>Incumplimiento meta recaudo DIAN 2025</td>
+        <td>$9.7 billones menos</td>
+        <td>Los ingresos tributarios son menos robustos de lo proyectado.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note danger">VEREDICTO CONTEXTUAL: Todo candidato que prometa expansión del gasto sin fuente explícita de financiamiento debe ser penalizado en viabilidad. Todo candidato que prometa reducir impuestos sin recorte compensatorio simultáneo debe ser penalizado igualmente. El margen de maniobra real del próximo gobierno es negativo.</div>
+</div>
+
+<!-- ══ IVÁN CEPEDA ══ -->
+<div class="section" id="cepeda">
+  <div class="candidate-section">
+    <div class="candidate-header" style="background: rgba(192,64,64,0.08); border-left: 4px solid var(--cepeda);">
+      <div class="candidate-badge" style="background: var(--cepeda);"></div>
+      <div>
+        <div class="candidate-name">Iván Cepeda Castro</div>
+        <div class="candidate-meta">Pacto Histórico · Izquierda · Fórmula: Aída Quilcué · Plan: "El Poder de la Verdad" (433 págs.)</div>
+      </div>
+      <div class="candidate-score">
+        <div class="score-val" style="color: var(--cepeda);">4.9</div>
+        <div class="score-label">Ranking general /10</div>
+      </div>
+    </div>
+    <div class="candidate-body">
+
+      <div class="sec-title">1 · Resumen Ejecutivo</div>
+      <div class="summary-box">
+        Senador desde 2010. Candidato de la continuidad del petrismo. Su plan de 433 páginas mezcla discursos de plaza pública con propuestas concretas, organizado en "cinco revoluciones". Profundiza reformas Petro: paz total, reforma agraria, universalización de salud y educación, reforma constituyente. Sin experiencia ejecutiva previa. Carrera construida desde activismo de derechos humanos y legislativo. <strong>Nunca ha gobernado.</strong> Sus propuestas implican expansión fiscal significativa en un contexto de crisis fiscal severa, sin financiamiento claro. El plan mezcla propuestas técnicas con retórica manifiesto. Coherencia ideológica alta, viabilidad fiscal baja.
+      </div>
+
+      <div class="sec-title">2 · Propuestas Principales</div>
+      <table class="data-table">
+        <thead><tr><th>Área</th><th>Propuesta</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td class="area">Economía</td><td>Reforma tributaria progresiva (impuesto grandes patrimonios, recorte exenciones). Ley de Austeridad Republicana.</td><td>Financiar gasto social. Reducir dependencia petrolera.</td></tr>
+          <tr><td class="area">Seguridad</td><td>"Seguridad humana": enfoque social, no militar. Continuar Paz Total. Protección líderes sociales.</td><td>Reducir violencia estructural, no solo criminal.</td></tr>
+          <tr><td class="area">Educación</td><td>Universalización educación pública y gratuita en todos los niveles incluyendo universidad.</td><td>Eliminar barreras de acceso.</td></tr>
+          <tr><td class="area">Salud</td><td>Sistema de salud universal sin EPS. Fortalecer red hospitalaria pública.</td><td>Derecho fundamental sin intermediación privada.</td></tr>
+          <tr><td class="area">Empleo</td><td>Formalización vía derechos laborales. Programa "Te pagamos por estudiar".</td><td>Reducir informalidad (>55% fuerza laboral).</td></tr>
+          <tr><td class="area">Corrupción</td><td>Revolución ética. Unidad anticorrupción en Fiscalía. Fondo reparación víctimas de corrupción.</td><td>Macrocorrupción como eje central del programa.</td></tr>
+          <tr><td class="area">Infraestructura</td><td>30,000 km de vías terciarias "Vías para la Paz". Alianza Público-Popular con JAC.</td><td>Conectar territorios rurales.</td></tr>
+          <tr><td class="area">RR.II.</td><td>Condenar intervención de EE.UU. en Venezuela. Política exterior de paz y soberanía.</td><td>Autonomía frente a potencias.</td></tr>
+          <tr><td class="area">Energía</td><td>Prohibir fracking y extracción no convencional. Transición energética acelerada.</td><td>Protección ambiental, reducir renta fósil.</td></tr>
+          <tr><td class="area">Reforma Inst.</td><td>Asamblea Nacional Constituyente. Reescribir la Constitución del 91.</td><td>Cambio del contrato social.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">3 · Viabilidad Real</div>
+      <table class="data-table">
+        <thead><tr><th>Propuesta</th><th>Calificación</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Reforma tributaria progresiva</td><td><span class="tag tag-yellow">Viable</span></td><td>Técnicamente posible. Requiere mayoría en Congreso. Depende de reforma que Petro tampoco logró consolidar.</td></tr>
+          <tr><td>Salud universal sin EPS</td><td><span class="tag tag-orange">Difícil</span></td><td>Reforma Petro fracasó parcialmente. Crisis de EPS actual exige solución urgente. Sin EPS requiere red pública que no existe a escala suficiente.</td></tr>
+          <tr><td>Educación superior gratuita universal</td><td><span class="tag tag-red">Poco viable</span></td><td>Costo estimado: entre $15 y $25 billones adicionales anuales. Imposible en contexto fiscal actual sin recortar otro gasto.</td></tr>
+          <tr><td>Paz Total / Continuar diálogos</td><td><span class="tag tag-orange">Difícil</span></td><td>Petro no logró acuerdos con ELN ni Clan del Golfo. Cepeda propone continuar lo que no funcionó.</td></tr>
+          <tr><td>30,000 km vías terciarias</td><td><span class="tag tag-red">Poco viable</span></td><td>En cuatro años es técnicamente imposible. Colombia construye ~200 km/año de vías terciarias. Necesita 150 veces más velocidad.</td></tr>
+          <tr><td>Asamblea Constituyente</td><td><span class="tag tag-darkred">Prácticamente inviable</span></td><td>Requiere aprobación congresional o referendo. Congreso no lo aprobará. Crea inestabilidad institucional severa.</td></tr>
+          <tr><td>Prohibir fracking</td><td><span class="tag tag-yellow">Viable</span></td><td>Ejecutable por decreto. Costo: reducción de ingresos petroleros en contexto fiscal crítico.</td></tr>
+          <tr><td>Colombia Mayor: 3 a 5 millones beneficiarios</td><td><span class="tag tag-red">Poco viable</span></td><td>Costo 2026 ya supera $8 billones. Ampliar 67% más requiere $5-6 billones adicionales sin fuente clara.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">4 · Análisis Histórico</div>
+      <div class="note warn">Paz negociada: Intentada con FARC (2016, exitosa) y ELN (2022-2024, fallida bajo Petro). Los mismos mecanismos propuestos por Cepeda no lograron acuerdo con ELN en 3 años. <strong>Inferencia razonable</strong>: continuación sin cambio de condiciones implica continuación del fracaso.</div>
+      <div class="note warn">Salud universal sin aseguradoras: Cuba (70 años de proceso), Costa Rica (50 años). Colombia con red hospitalaria pública deteriorada no puede replicar en 4 años. <strong>Hecho verificable</strong>.</div>
+      <div class="note warn">Reforma agraria: Intentada desde 1961. Ley 160/1994. Estatuto de Desarrollo Rural 2007. Nunca se ejecutó a escala. La de Petro tampoco entregó los resultados prometidos. <strong>Hecho verificable</strong>.</div>
+
+      <div class="sec-title">5 · Coherencia Ideológica</div>
+      <div class="coherence-block">
+        <div class="coherence-score" style="color: var(--green);">8.5</div>
+        <div class="coherence-text">
+          <strong>Alta coherencia.</strong> Cepeda lleva 50 años en política de izquierda. Su plan de 2026 es consistente con su trayectoria legislativa, su defensa de víctimas, su apoyo al proceso de paz y su oposición al paramilitarismo. No hay giros oportunistas detectables. Excepción menor: el tono electoral suaviza algunas posiciones más radicales de su pasado comunista. La Asamblea Constituyente es consistente con posiciones históricas de la izquierda colombiana pero representa un salto institucional serio.
+        </div>
+      </div>
+
+      <div class="sec-title">6 · Auditoría de Credibilidad</div>
+      <div class="note">Sin experiencia ejecutiva: nunca ha gobernado más que en el Congreso. Su credibilidad se mide en logros legislativos y activismo, no en gestión pública.</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-item-label">Honestidad percibida</div><div class="score-item-val" style="color:var(--green);">7/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:70%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Coherencia histórica</div><div class="score-item-val" style="color:var(--green);">8.5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:85%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad técnica</div><div class="score-item-val" style="color:var(--accent);">5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:50%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad de ejecución</div><div class="score-item-val" style="color:var(--red);">3/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:30%; background:var(--red)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Riesgo incumplimiento</div><div class="score-item-val" style="color:var(--red);">8/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:80%; background:var(--red)"></div></div></div>
+      </div>
+      <div class="note warn">Escándalos: CNE abrió indagación preliminar por financiamiento irregular de campaña (2026). Proceso contra Uribe por manipulación de testigos (en su favor) fue primero declarado culpable luego revertido. Sin condenas propias. <strong>Hecho verificable</strong>.</div>
+
+      <div class="sec-title">7 · Probabilidad de Cumplimiento</div>
+      <div class="prob-row"><div class="prob-label">% intentará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:80%; background:var(--green)"></div></div><div class="prob-val">80%</div></div>
+      <div class="prob-row"><div class="prob-label">% logrará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:25%; background:var(--red)"></div></div><div class="prob-val">25%</div></div>
+      <ul class="obstacle-list">
+        <li>Sin mayoría congresional propia. El Pacto Histórico perdió apoyo en 2026.</li>
+        <li>Crisis fiscal impide expansión del gasto prometida.</li>
+        <li>Cero experiencia ejecutiva. No ha gerenciado una entidad pública.</li>
+        <li>Constituyente bloqueada por Congreso y opinión pública.</li>
+        <li>Paz Total: grupos armados no tienen incentivos suficientes para negociar.</li>
+        <li>Plan mezcla propuestas concretas con discurso manifiesto — baja operacionalización.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PALOMA VALENCIA ══ -->
+<div class="section" id="paloma">
+  <div class="candidate-section">
+    <div class="candidate-header" style="background: rgba(64,96,192,0.08); border-left: 4px solid var(--paloma);">
+      <div class="candidate-badge" style="background: var(--paloma);"></div>
+      <div>
+        <div class="candidate-name">Paloma Valencia Laserna</div>
+        <div class="candidate-meta">Centro Democrático · Centro-derecha · Fórmula: Juan Daniel Oviedo · Plan: "Orden y Firmeza" (111 propuestas)</div>
+      </div>
+      <div class="candidate-score">
+        <div class="score-val" style="color: var(--paloma);">6.1</div>
+        <div class="score-label">Ranking general /10</div>
+      </div>
+    </div>
+    <div class="candidate-body">
+
+      <div class="sec-title">1 · Resumen Ejecutivo</div>
+      <div class="summary-box">
+        Senadora por 12 años. Abogada con estudios en economía. Nunca ha ejercido cargo ejecutivo. Su plan "Orden, Firmeza y Corazón" tiene 111 propuestas estructuradas en 5 "bombas" y 5 "transformaciones". Coherente con el Centro Democrático: seguridad dura, austeridad fiscal, apertura económica. La alianza con Juan Daniel Oviedo (exdirector DANE, perfil técnico) aporta credibilidad estadística. El plan es el más técnico entre los candidatos de derecha, pero su principal propuesta de recortar $50 billones en gasto implica un ajuste de una dureza sin precedentes. Tensión interna: promete bajar impuestos a empresas mientras hace el mayor ajuste fiscal de la historia.
+      </div>
+
+      <div class="sec-title">2 · Propuestas Principales</div>
+      <table class="data-table">
+        <thead><tr><th>Área</th><th>Propuesta</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td class="area">Economía</td><td>Recorte $50 billones en gasto (25% funcionamiento, 30% contratación). Bajar impuestos a empresas, renta, patrimonio y predial. Crecimiento 5% anual. Exportaciones +$10 mil millones USD.</td><td>Ortodoxia fiscal + estímulo a inversión privada.</td></tr>
+          <tr><td class="area">Seguridad</td><td>Aumento gasto seguridad: +20 billones en cuatrienio. 22,000 cupos penitenciarios nuevos. 19,000 cupos carcelarios. Cárceles agropecuarias. Reducir congestión judicial con IA al 0%.</td><td>Recuperar control territorial. Estado fuerte.</td></tr>
+          <tr><td class="area">Educación</td><td>Mejora calidad con rendición de cuentas docente. Acceso a educación técnica y superior ligado a mercado laboral.</td><td>Pertinencia más que universalización masiva.</td></tr>
+          <tr><td class="area">Salud</td><td>Resolver crisis de EPS. Mantener sistema mixto pero con eficiencia. Pago de deudas a prestadores.</td><td>Estabilizar sistema sin desmantelarlo.</td></tr>
+          <tr><td class="area">Empleo</td><td>Inversión 25% del PIB. Reducción de trámites. Simplificación regulatoria para pymes.</td><td>Empleo vía inversión privada, no gasto público.</td></tr>
+          <tr><td class="area">Corrupción</td><td>Blockchain en contratación pública ("Blockchain 2030"). IA para auditorías. Digitalización procesos. Denuncia ciudadana.</td><td>Corrupción por transparencia tecnológica.</td></tr>
+          <tr><td class="area">Infraestructura</td><td>Reactivar sector minero-energético al nivel de 2019 (+6% PIB). Recuperar confianza inversionista.</td><td>Infraestructura financiada por crecimiento privado.</td></tr>
+          <tr><td class="area">RR.II.</td><td>Restablecer relaciones con EE.UU. y aliados occidentales. Seguridad jurídica para inversión extranjera.</td><td>Inserción internacional ortodoxa.</td></tr>
+          <tr><td class="area">Energía</td><td>Reactivar exploración petrolera. Apoya fracking bajo regulación. Estabilidad energética como base del crecimiento.</td><td>Mantener ingresos fósiles en transición gradual.</td></tr>
+          <tr><td class="area">Reforma Inst.</td><td>Reducir tamaño del Estado. IA en gobierno. Primera mujer presidenta. Reformar Policía sin desmantelarla.</td><td>Estado austero y eficiente.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">3 · Viabilidad Real</div>
+      <table class="data-table">
+        <thead><tr><th>Propuesta</th><th>Calificación</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Recorte $50 billones</td><td><span class="tag tag-orange">Difícil</span></td><td>Numéricamente posible pero políticamente brutal. Implica despidos masivos, recortes sociales, conflicto con sindicatos y Congreso. Ningún gobierno colombiano ha ejecutado ajuste de esta magnitud.</td></tr>
+          <tr><td>Bajar impuestos + recortar gasto simultáneamente</td><td><span class="tag tag-orange">Difícil</span></td><td>Contradicción interna: si recortas impuestos mientras ajustas gasto, el ajuste neto debe ser mayor. La matemática es tensa. <strong>Inferencia razonable</strong>: una de las dos promesas cederá.</td></tr>
+          <tr><td>Crecimiento 5% anual</td><td><span class="tag tag-red">Poco viable</span></td><td>Colombia creció promedio 2.5-3% en la última década. Para lograr 5% se necesita reforma estructural profunda que no puede verse en 4 años. Meta aspiracional, no técnica.</td></tr>
+          <tr><td>22,000 cupos penitenciarios nuevos</td><td><span class="tag tag-yellow">Viable</span></td><td>Ejecutable. Costoso pero con precedente. El sistema penitenciario colombiano tiene déficit real de cupos. Requiere financiamiento específico.</td></tr>
+          <tr><td>Blockchain en contratación</td><td><span class="tag tag-yellow">Viable</span></td><td>Tecnológicamente factible. Requiere tiempo de implementación y capacidad institucional. Ejemplos exitosos en Estonia y Georgia.</td></tr>
+          <tr><td>Reducir congestión judicial al 0% con IA</td><td><span class="tag tag-darkred">Prácticamente inviable</span></td><td>El 0% de congestión judicial es una promesa sin base técnica en ningún país del mundo. La congestión actual es 48.2%. La IA no resuelve el déficit de jueces y carga procesal.</td></tr>
+          <tr><td>Exportaciones +$10 mil millones USD</td><td><span class="tag tag-orange">Difícil</span></td><td>Requiere política industrial y apertura de mercados que supera el periodo presidencial en efectos.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">4 · Análisis Histórico</div>
+      <div class="note warn">Seguridad dura: La Seguridad Democrática de Uribe (2002-2010) redujo indicadores de violencia significativamente pero no eliminó grupos armados. Los reemplazó y mutó. <strong>Hecho verificable</strong>. Valencia propone versión 2.0 sin demostrar por qué el resultado sería diferente.</div>
+      <div class="note warn">Reducción masiva del Estado: Argentina (Milei, 2024-2026) ejecutó ajuste comparable. Resultado: inflación bajó, pobreza subió inicialmente, recuperación incierta. <strong>Hecho verificable con reservas por contexto diferente</strong>.</div>
+      <div class="note good">Fracking bajo regulación ambiental: estados de EE.UU. con regulación robusta lograron producción sin los peores impactos. <strong>Inferencia razonable</strong> que Colombia podría replicarlo, aunque la capacidad regulatoria colombiana es menor.</div>
+
+      <div class="sec-title">5 · Coherencia Ideológica</div>
+      <div class="coherence-block">
+        <div class="coherence-score" style="color: var(--green);">7.5</div>
+        <div class="coherence-text">
+          <strong>Buena coherencia.</strong> 12 años en el Centro Democrático sin giro ideológico detectable. Su programa refleja fielmente las posiciones del partido: seguridad, mercado, familia, austeridad. Tensión interna no resuelta: bajar impuestos mientras se hace el mayor ajuste fiscal de la historia. Esto no es incoherencia ideológica sino promesa matemáticamente difícil de cuadrar. No hay cambios oportunistas de posición detectados en su trayectoria.
+        </div>
+      </div>
+
+      <div class="sec-title">6 · Auditoría de Credibilidad</div>
+      <div class="note">Sin experiencia ejecutiva. La fórmula (Oviedo) aporta la capacidad técnica que ella no tiene. La credibilidad técnica del plan es parcialmente prestada.</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-item-label">Honestidad percibida</div><div class="score-item-val" style="color:var(--green);">7/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:70%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Coherencia histórica</div><div class="score-item-val" style="color:var(--green);">7.5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:75%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad técnica</div><div class="score-item-val" style="color:var(--accent);">6/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:60%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad de ejecución</div><div class="score-item-val" style="color:var(--accent);">5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:50%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Riesgo incumplimiento</div><div class="score-item-val" style="color:var(--orange);">6/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:60%; background:var(--orange)"></div></div></div>
+      </div>
+
+      <div class="sec-title">7 · Probabilidad de Cumplimiento</div>
+      <div class="prob-row"><div class="prob-label">% intentará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:75%; background:var(--green)"></div></div><div class="prob-val">75%</div></div>
+      <div class="prob-row"><div class="prob-label">% logrará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:35%; background:var(--orange)"></div></div><div class="prob-val">35%</div></div>
+      <ul class="obstacle-list">
+        <li>Recorte $50 billones requiere mayoría congresional que no tiene garantizada.</li>
+        <li>La tensión entre bajar impuestos y ajustar gasto llevará a ceder en una de las dos.</li>
+        <li>Sin experiencia ejecutiva. Nunca ha gerenciado nada más que su curul.</li>
+        <li>Seguridad dura requiere gasto de +20 billones que choca con el ajuste fiscal prometido.</li>
+        <li>Metas de crecimiento del 5% y de congestión judicial al 0% son aspiracionales, no técnicas.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DE LA ESPRIELLA ══ -->
+<div class="section" id="espriella">
+  <div class="candidate-section">
+    <div class="candidate-header" style="background: rgba(224,112,48,0.08); border-left: 4px solid var(--espriella);">
+      <div class="candidate-badge" style="background: var(--espriella);"></div>
+      <div>
+        <div class="candidate-name">Abelardo de la Espriella</div>
+        <div class="candidate-meta">Defensores de la Patria · Derecha · Fórmula: José Manuel Restrepo (ex-MinHacienda) · Plan: "Patria Milagro"</div>
+      </div>
+      <div class="candidate-score">
+        <div class="score-val" style="color: var(--espriella);">4.2</div>
+        <div class="score-label">Ranking general /10</div>
+      </div>
+    </div>
+    <div class="candidate-body">
+
+      <div class="sec-title">1 · Resumen Ejecutivo</div>
+      <div class="summary-box">
+        Abogado penalista y empresario de Montería. <strong>Outsider político</strong> sin trayectoria en cargos públicos. Primer plan de gobierno presentado parcialmente (basado en entrevistas y redes sociales antes de publicar el documento oficial). Su imagen de "outsider" tipo Bukele/Milei le dio impulso, pero su programa carece de profundidad técnica en varios ejes. La fórmula Restrepo aporta la única credibilidad fiscal real. El plan promete crecimiento del 7% anual — la cifra más alta de todos los candidatos y la menos respaldada técnicamente. El programa "Patria Milagro" mezcla propuestas duras de seguridad con promesas económicas optimistas sin financiamiento detallado.
+      </div>
+
+      <div class="sec-title">2 · Propuestas Principales</div>
+      <table class="data-table">
+        <thead><tr><th>Área</th><th>Propuesta</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td class="area">Economía</td><td>Crecimiento 7% anual. Reducción impuestos a empresas. Eliminación trámites. Plan de choque fiscal. Refinanciar deuda pública. Llevar Colombia al top 25 países prósperos.</td><td>Reactivación vía mercado y confianza inversionista.</td></tr>
+          <tr><td class="area">Seguridad</td><td>"Remasterización 2.0" de la Seguridad Democrática. Ofensiva militar para recuperar territorio en 90 días. Plan Colombia 2.0 con drones e IA. 10 megacárceles. Retoma glifosato. Cooperación con EE.UU. e Israel.</td><td>Control territorial total. Mano dura total.</td></tr>
+          <tr><td class="area">Educación</td><td>Programas STEM. Fomento emprendimiento femenino en ciencia y tecnología. No detalla reforma estructural.</td><td>Educación alineada con economía digital.</td></tr>
+          <tr><td class="area">Salud</td><td>Reforma del sistema actual. Sin detallar mecanismo de transición.</td><td>Mejorar acceso sin precisar modelo.</td></tr>
+          <tr><td class="area">Empleo</td><td>2 millones nuevas hectáreas productivas. 600,000 empleos rurales. Alianza agro-empresa privada.</td><td>Empleo vía sector rural y agricultura.</td></tr>
+          <tr><td class="area">Corrupción</td><td>Blockchain 2030 en contratación. "Bloque Anticorrupción". Reforma judicial.</td><td>Transparencia tecnológica + persecución penal.</td></tr>
+          <tr><td class="area">Infraestructura</td><td>Vías, riego, conectividad rural. Sin montos ni cronograma específico.</td><td>Modernización del campo.</td></tr>
+          <tr><td class="area">RR.II.</td><td>Cooperación con EE.UU. e Israel en seguridad. Romper diálogos con grupos que no cumplan.</td><td>Alineación con Occidente. Fin Paz Total.</td></tr>
+          <tr><td class="area">Energía</td><td>Reactivar producción fósil. Retomar fumigación con glifosato. Plan Colombia 2.0.</td><td>Ingresos energéticos + control coca.</td></tr>
+          <tr><td class="area">Reforma Inst.</td><td>Plan de choque eficiencia estatal. Reducción tamaño Estado. Legislación temporal anti-crimen.</td><td>Estado menor pero más efectivo.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">3 · Viabilidad Real</div>
+      <table class="data-table">
+        <thead><tr><th>Propuesta</th><th>Calificación</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Crecimiento 7% anual</td><td><span class="tag tag-darkred">Prácticamente inviable</span></td><td>Colombia nunca ha sostenido 7% en democracia. El máximo reciente fue 6.9% en 2007 (boom minero). No tiene plan concreto para lograrlo. Meta sin respaldo técnico.</td></tr>
+          <tr><td>Recuperar territorio en 90 días</td><td><span class="tag tag-darkred">Prácticamente inviable</span></td><td>Uribe tardó 8 años y no lo logró totalmente. Ningún país con conflicto interno comparable ha logrado recuperación territorial en 90 días. Promesa de campaña sin base.</td></tr>
+          <tr><td>10 megacárceles</td><td><span class="tag tag-red">Poco viable</span></td><td>Construir 10 megacárceles en 4 años requiere diseño, licitación, construcción. Mínimo 3-4 años cada una. Cronograma imposible.</td></tr>
+          <tr><td>Glifosato</td><td><span class="tag tag-yellow">Viable</span></td><td>Ejecutable por decreto. Evidencia internacional: efectiva para reducción temporal de cultivos, no elimina narcotráfico. Colombia usó glifosato 20 años con resultados parciales.</td></tr>
+          <tr><td>Plan Colombia 2.0 con EE.UU. e Israel</td><td><span class="tag tag-orange">Difícil</span></td><td>Depende de negociación bilateral. Trump 2.0 tiene prioridades diferentes a Plan Colombia. Israel está en guerra. Incertidumbre alta.</td></tr>
+          <tr><td>Top 25 países prósperos del mundo</td><td><span class="tag tag-darkred">Prácticamente inviable</span></td><td>Colombia está en el puesto ~65-70 en PIB per cápita. Para entrar al top 25 necesitaría multiplicar su ingreso por 3-4 veces. Imposible en 4 años.</td></tr>
+          <tr><td>Plan fiscal (Restrepo como fórmula)</td><td><span class="tag tag-yellow">Viable</span></td><td>Restrepo tiene credibilidad técnica real. La ortodoxia fiscal es más creíble con él. Pero las promesas del candidato van en dirección opuesta (gasto en seguridad + bajar impuestos).</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">4 · Análisis Histórico</div>
+      <div class="note danger">Seguridad Democrática 2.0: El original redujo homicidios de 69/100k en 2002 a 33/100k en 2009. Pero desplazamiento continuó. Falsos positivos: 6,402 víctimas. Grupos mutaron. Clan del Golfo, Bacrim y disidencias FARC emergieron. <strong>Hecho verificable</strong>. Una "2.0" sin corregir estos fallos replicaría los mismos errores.</div>
+      <div class="note warn">Glifosato: Usado en Colombia 1994-2015. Reducía cultivos temporalmente pero el efecto globo los trasladaba a otras zonas. La OMS clasificó el glifosato como probable cancerígeno. <strong>Hecho verificable</strong>.</div>
+      <div class="note danger">Outsiders sin experiencia ejecutiva: Bukele (El Salvador) sí logró reducir homicidios dramáticamente pero con medidas que la CIDH calificó de violatorias de DDHH y un Congreso capturado. Milei: ajuste brutal con resultados socioeconómicos mixtos. De la Espriella sin partido sólido ni control del Congreso no tiene el poder institucional de Bukele o Milei. <strong>Inferencia razonable</strong>.</div>
+
+      <div class="sec-title">5 · Coherencia Ideológica</div>
+      <div class="coherence-block">
+        <div class="coherence-score" style="color: var(--orange);">4.5</div>
+        <div class="coherence-text">
+          <strong>Coherencia baja.</strong> De la Espriella no tiene trayectoria política previa que evaluar sistemáticamente. Sus posiciones públicas como abogado penalista (defendiendo figuras de todo el espectro) no son indicadores ideológicos confiables. Su movimiento "Defensores de la Patria" fue creado para esta campaña. La promesa de crecimiento del 7% es inconsistente con el ajuste fiscal que la deuda requiere. Su fórmula Restrepo es un hombre de economía ortodoxa que gobernó con Duque; De la Espriella es un populista de derecha. Tensión interna real entre las dos visiones del equipo.
+        </div>
+      </div>
+
+      <div class="sec-title">6 · Auditoría de Credibilidad</div>
+      <div class="note danger">Sin historial en cargos públicos. Imposible evaluar cumplimiento de promesas anteriores porque no las ha tenido. Toda evaluación es sobre el discurso actual. <strong>Hecho verificable</strong>.</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-item-label">Honestidad percibida</div><div class="score-item-val" style="color:var(--accent);">5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:50%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Coherencia histórica</div><div class="score-item-val" style="color:var(--red);">4/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:40%; background:var(--red)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad técnica</div><div class="score-item-val" style="color:var(--red);">4/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:40%; background:var(--red)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad de ejecución</div><div class="score-item-val" style="color:var(--red);">3/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:30%; background:var(--red)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Riesgo incumplimiento</div><div class="score-item-val" style="color:var(--red);">9/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:90%; background:var(--red)"></div></div></div>
+      </div>
+
+      <div class="sec-title">7 · Probabilidad de Cumplimiento</div>
+      <div class="prob-row"><div class="prob-label">% intentará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:65%; background:var(--accent)"></div></div><div class="prob-val">65%</div></div>
+      <div class="prob-row"><div class="prob-label">% logrará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:15%; background:var(--red)"></div></div><div class="prob-val">15%</div></div>
+      <ul class="obstacle-list">
+        <li>Sin partido con bancada en Congreso. "Defensores de la Patria" es un movimiento nuevo sin estructura.</li>
+        <li>Las promesas más marketeras (90 días, top 25, 7%) son inviables por diseño.</li>
+        <li>Sin experiencia ejecutiva de ningún tipo. Riesgo de caos administrativo.</li>
+        <li>Tensión Restrepo-De la Espriella: el técnico y el populista tendrán que ceder. Históricamente gana el ejecutivo.</li>
+        <li>Crecimiento 7% sin reforma estructural detallada no ocurrirá.</li>
+        <li>El programa de seguridad requiere un gasto que choca con el ajuste fiscal necesario.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FAJARDO ══ -->
+<div class="section" id="fajardo">
+  <div class="candidate-section">
+    <div class="candidate-header" style="background: rgba(48,144,160,0.08); border-left: 4px solid var(--fajardo);">
+      <div class="candidate-badge" style="background: var(--fajardo);"></div>
+      <div>
+        <div class="candidate-name">Sergio Fajardo Valderrama</div>
+        <div class="candidate-meta">Dignidad y Compromiso · Centro · Matemático · Exalcalde Medellín 2004-07 · Exgobernador Antioquia 2012-15 · 3ra candidatura presidencial</div>
+      </div>
+      <div class="candidate-score">
+        <div class="score-val" style="color: var(--fajardo);">6.8</div>
+        <div class="score-label">Ranking general /10</div>
+      </div>
+    </div>
+    <div class="candidate-body">
+
+      <div class="sec-title">1 · Resumen Ejecutivo</div>
+      <div class="summary-box">
+        El único candidato con <strong>dos gestiones ejecutivas exitosas y verificables</strong>. Alcalde de Medellín (terminó con 90% de aprobación) y gobernador de Antioquia (reconocido mejor gobernador del país). Su bandera es educación, transparencia y urbanismo social. Tercera candidatura presidencial. Encuestas lo ubican en ~3% — su peor resultado electoral. No logró alianza con Claudia López. Sin bancada propia sólida. Imputado por Contraloría en Hidroituango (sin condena, sin actos de corrupción directos). Propuestas más concretas y técnicas que promedio, financiadas con mayor cuidado. El candidato con mejor historial ejecutivo demostrable pero con menor viabilidad política actual.
+      </div>
+
+      <div class="sec-title">2 · Propuestas Principales</div>
+      <table class="data-table">
+        <thead><tr><th>Área</th><th>Propuesta</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td class="area">Economía</td><td>Reforma tributaria condicionada a pacto nacional. Alivios para pymes. Crédito preferencial. Corrección déficit fiscal por recorte y recaudo eficiente.</td><td>Ajuste fiscal responsable sin destruir crecimiento.</td></tr>
+          <tr><td class="area">Seguridad</td><td>Recuperar control territorial + aumento pie de fuerza policial urbano. Prevención reclutamiento juvenil. Programas sociales en zonas de conflicto. Combina operativo + social.</td><td>Modelo mixto: fuerza + prevención.</td></tr>
+          <tr><td class="area">Educación</td><td>Educación como eje transformador. Infraestructura educativa. Calidad docente. Parques educativos (modelo Medellín/Antioquia).</td><td>Replicar modelo exitoso de Medellín a escala nacional.</td></tr>
+          <tr><td class="area">Salud</td><td>Resolver crisis EPS con modelo mixto reformado. Pago de deudas. Sin desmantelar sistema.</td><td>Estabilidad antes que transformación radical.</td></tr>
+          <tr><td class="area">Empleo</td><td>Economía regional. Apoyo a pymes con acompañamiento técnico e incentivos fiscales.</td><td>Empleo desde base productiva regional.</td></tr>
+          <tr><td class="area">Corrupción</td><td>Transparencia institucional como modelo de gobierno. Selección por meritocracia. Control político fuerte.</td><td>Llevar el modelo Compromiso Ciudadano al gobierno nacional.</td></tr>
+          <tr><td class="area">Infraestructura</td><td>Continuidad proyectos estratégicos. Autopistas para la Prosperidad (modelo que impulsó en Antioquia).</td><td>Conectividad como motor de desarrollo.</td></tr>
+          <tr><td class="area">RR.II.</td><td>No ha detallado postura específica en 2026. <em>[Insuficiencia de evidencia]</em></td><td>—</td></tr>
+          <tr><td class="area">Energía</td><td>Transición energética sin cortar flujo actual. Sin posición explícita sobre fracking en 2026.</td><td>Gradualidad en transición.</td></tr>
+          <tr><td class="area">Reforma Inst.</td><td>Institucionalidad como valor supremo. No cambiar las reglas del juego. Reforma policial.</td><td>Recuperar confianza en las instituciones.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">3 · Viabilidad Real</div>
+      <table class="data-table">
+        <thead><tr><th>Propuesta</th><th>Calificación</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Reforma tributaria con pacto nacional</td><td><span class="tag tag-yellow">Viable</span></td><td>Requiere construcción de consenso — algo que Fajardo ha demostrado poder hacer en escenarios con oposición congresional. Sin garantía de mayoría en Congreso nacional.</td></tr>
+          <tr><td>Modelo educativo Medellín a escala</td><td><span class="tag tag-orange">Difícil</span></td><td>Funcionó en Medellín y Antioquia con condiciones locales únicas. Escalar a 32 departamentos con diferente capacidad institucional es significativamente más complejo. El propio Fajardo admitió que sus logros en educación en Antioquia no se reflejaron en todas las pruebas Saber.</td></tr>
+          <tr><td>Seguridad modelo mixto (operativo + social)</td><td><span class="tag tag-green">Muy viable</span></td><td>El modelo de Medellín (fuerza + urbanismo social) fue reconocido internacionalmente y redujo homicidios de 380/100k (1991) a niveles manejables. Evidencia empírica sólida a escala municipal.</td></tr>
+          <tr><td>Control fiscal responsable</td><td><span class="tag tag-yellow">Viable</span></td><td>Fajardo tiene récord limpio en manejo de recursos. En ambas administraciones mantuvo finanzas ordenadas. El desafío fiscal nacional es mayor que cualquier manejo subnacional.</td></tr>
+          <tr><td>Corrupción por meritocracia</td><td><span class="tag tag-yellow">Viable</span></td><td>Historial real: sus dos gobiernos son referentes de transparencia. Sostenible en contexto de coalición sin favores. Desafío: a nivel nacional los partidos de coalición exigen cuotas.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">4 · Análisis Histórico</div>
+      <div class="note good">Medellín bajo Fajardo (2004-2007): homicidios cayeron 60%, inversión en educación transformó comunas violentas (Moravia, Santo Domingo Savio). Favorabilidad: 90% al salir. <strong>Hecho verificable</strong>.</div>
+      <div class="note good">Gobernación Antioquia (2012-2015): reconocido mejor gobernador del país por Colombia Líder. Avances en transparencia (Índice de Transparencia Departamental). Autopistas para la Prosperidad iniciadas. <strong>Hecho verificable</strong>.</div>
+      <div class="note warn">Límites de sus logros: en Antioquia no logró pavimentar 3,000 km de carreteras terciarias prometidas. Parques educativos quedaron desfinanciados por su sucesor. Pruebas Saber en Antioquia bajaron en su último año. <strong>Hecho verificable</strong>.</div>
+      <div class="note warn">Hidroituango: imputado por Contraloría (no por corrupción sino por supervisión). Sin condena. Costo reputacional real. <strong>Hecho verificable</strong>.</div>
+
+      <div class="sec-title">5 · Coherencia Ideológica</div>
+      <div class="coherence-block">
+        <div class="coherence-score" style="color: var(--green);">8.0</div>
+        <div class="coherence-text">
+          <strong>Alta coherencia.</strong> Fajardo ha repetido el mismo discurso durante 20 años: educación, transparencia, no a los extremos, rechazo a la corrupción, meritocracia. No tiene giros ideológicos detectables. Su rechazo a Petro y a Uribe ha sido consistente. La acusación de Claudia López de "incoherencia" es una disputa política, no evidencia de contradicción ideológica. La única incoherencia señalable es haber apoyado a Petro en segunda vuelta 2022 y luego criticarlo — pero él argumentó que era el menor de dos males, lo que es una posición defensible.
+        </div>
+      </div>
+
+      <div class="sec-title">6 · Auditoría de Credibilidad</div>
+      <div class="note good">Único candidato con dos gestiones ejecutivas auditables y aprobadas. Mejor historial de todos los candidatos.</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-item-label">Honestidad percibida</div><div class="score-item-val" style="color:var(--green);">8.5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:85%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Coherencia histórica</div><div class="score-item-val" style="color:var(--green);">8/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:80%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad técnica</div><div class="score-item-val" style="color:var(--green);">8/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:80%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad de ejecución</div><div class="score-item-val" style="color:var(--green);">8/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:80%; background:var(--green)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Riesgo incumplimiento</div><div class="score-item-val" style="color:var(--green);">4/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:40%; background:var(--green)"></div></div></div>
+      </div>
+
+      <div class="sec-title">7 · Probabilidad de Cumplimiento</div>
+      <div class="prob-row"><div class="prob-label">% intentará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:90%; background:var(--green)"></div></div><div class="prob-val">90%</div></div>
+      <div class="prob-row"><div class="prob-label">% logrará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:55%; background:var(--accent)"></div></div><div class="prob-val">55%</div></div>
+      <ul class="obstacle-list">
+        <li>Sin bancada sólida en Congreso — arrastró el mismo problema en sus gobiernos locales y lo resolvió parcialmente.</li>
+        <li>Encuestas ~3%: riesgo de no pasar primera vuelta, haciendo el análisis irrelevante.</li>
+        <li>El modelo Medellín es más difícil de escalar a nivel nacional que a nivel departamental.</li>
+        <li>El ajuste fiscal de 4 puntos del PIB requiere medidas impopulares que limitarán su margen de acción.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLAUDIA LÓPEZ ══ -->
+<div class="section" id="claudia">
+  <div class="candidate-section">
+    <div class="candidate-header" style="background: rgba(160,64,176,0.08); border-left: 4px solid var(--claudia);">
+      <div class="candidate-badge" style="background: var(--claudia);"></div>
+      <div>
+        <div class="candidate-name">Claudia López Hernández</div>
+        <div class="candidate-meta">Movimiento Imparables · Centro-izquierda · Exalcaldesa Bogotá 2020-2023 · Investigadora Parapolítica · Candidata</div>
+      </div>
+      <div class="candidate-score">
+        <div class="score-val" style="color: var(--claudia);">5.8</div>
+        <div class="score-label">Ranking general /10</div>
+      </div>
+    </div>
+    <div class="candidate-body">
+
+      <div class="sec-title">1 · Resumen Ejecutivo</div>
+      <div class="summary-box">
+        Exalcaldesa de Bogotá (2020-2023). Llegó con 89% de aprobación, salió con 40%. La única candidata con experiencia ejecutiva relevante además de Fajardo. Destapó el escándalo de Parapolítica (2006) — su mayor credencial. En la Alcaldía: entregó Metro de Bogotá en continuidad, "Manzanas del Cuidado" (programa innovador), educación con becas. Incumplió promesas sobre Transmilenio y humedales. Múltiples aliados la señalan de "juego doble". Citada por la Fiscalía por presuntas irregularidades en Metro. Su programa enfatiza descentralización, crimen organizado transnacional (rechaza diálogos con grupos armados como política) y presupuestos participativos. Mejor balance ejecutivo que Cepeda/Valencia/De la Espriella, pero con inconsistencias verificables.
+      </div>
+
+      <div class="sec-title">2 · Propuestas Principales</div>
+      <table class="data-table">
+        <thead><tr><th>Área</th><th>Propuesta</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td class="area">Economía</td><td>Presupuestos participativos regionales. Descentralización fiscal. Sin reforma tributaria radical detallada.</td><td>Comunidades deciden asignación de recursos locales.</td></tr>
+          <tr><td class="area">Seguridad</td><td>Crimen organizado es mafia transnacional, no conflicto armado. Rechazo a negociaciones políticas. Justicia contra mafias. Reforma Policía Nacional. Justicia restaurativa.</td><td>Enfoque punitivo sin diálogos. Combinar represión + restauración.</td></tr>
+          <tr><td class="area">Educación</td><td>Educación como prioridad 1 (como en Bogotá). 70 colegios. Matrícula cero universidad distrital. Educación para el trabajo.</td><td>Replicar modelo Bogotá a escala nacional.</td></tr>
+          <tr><td class="area">Salud</td><td>Fortalecer coordinación entre niveles de gobierno. Sin propuesta radical sobre EPS.</td><td>Mejorar gobernanza del sistema.</td></tr>
+          <tr><td class="area">Empleo</td><td>Coordinación entre niveles de gobierno para empleo local.</td><td>Empleo desde la institucionalidad local.</td></tr>
+          <tr><td class="area">Corrupción</td><td>Bandera histórica desde Parapolítica. No ha detallado mecanismos nuevos específicos en 2026.</td><td>Anticorrupción como identidad política.</td></tr>
+          <tr><td class="area">Infraestructura</td><td>Metro de Bogotá como modelo. Movilidad sostenible. Sin propuesta nacional detallada.</td><td>Replicar experiencia bogotana.</td></tr>
+          <tr><td class="area">RR.II.</td><td>Apoyo a María Corina Machado en Venezuela. Democracia como valor. Sin política exterior detallada en 2026.</td><td>Alineación con democracias regionales.</td></tr>
+          <tr><td class="area">Energía</td><td>Sin posición detallada en programa 2026. <em>[Insuficiencia de evidencia]</em></td><td>—</td></tr>
+          <tr><td class="area">Reforma Inst.</td><td>Reforma Policía. Descentralización del poder. Coalición de 20 años con movimiento "Imparables".</td><td>Cambio institucional gradual y participativo.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">3 · Viabilidad Real</div>
+      <table class="data-table">
+        <thead><tr><th>Propuesta</th><th>Calificación</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Descentralización fiscal / presupuestos participativos</td><td><span class="tag tag-yellow">Viable</span></td><td>Tiene precedentes en Colombia y LAC. Requiere reforma legal y capacidad subnacional que varía enormemente por departamento.</td></tr>
+          <tr><td>Seguridad punitiva contra mafias (sin diálogos)</td><td><span class="tag tag-yellow">Viable</span></td><td>Técnicamente viable. Pero Colombia tiene décadas de conflicto con componente político que no desaparece por reclasificarlo como crimen. El enfoque punitivo puro no ha funcionado completamente.</td></tr>
+          <tr><td>Reforma Policía Nacional</td><td><span class="tag tag-orange">Difícil</span></td><td>Propuesta desde 2021. Requiere ley y cambio cultural institucional de largo aliento. En Bogotá el alcance fue limitado por ser política nacional.</td></tr>
+          <tr><td>Modelo educativo Bogotá a escala</td><td><span class="tag tag-orange">Difícil</span></td><td>Bogotá tiene recursos y capacidad institucional únicos en Colombia. 8 millones de habitantes, presupuesto gigante. Replicar con 32 departamentos de diferente nivel es reto mayor.</td></tr>
+          <tr><td>Coalición "Imparables" 20 años</td><td><span class="tag tag-orange">Difícil</span></td><td>Interesante concepto de movimiento cívico de largo plazo. Sin base partidaria sólida. Sin estructura nacional consolidada para 2026.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec-title">4 · Análisis Histórico</div>
+      <div class="note good">Parapolítica (2006): destapó escándalo que llevó a condenar a más de 50 congresistas vinculados con paramilitarismo. Su mayor legado verificable. <strong>Hecho verificable</strong>.</div>
+      <div class="note warn">Alcaldía Bogotá (2020-2023): Metro avanzó (~16% construcción). Manzanas del Cuidado: programa innovador y premiado. Reducción homicidios 2021-2023. Pero incumplió promesas de Transmilenio y humedales. Aprobación cayó de 89% a 40%. <strong>Hechos verificables</strong>.</div>
+      <div class="note warn">Inconsistencias verificadas: prometió no hacer troncal Carrera 7a (Transmilenio) y la hizo. Prometió frenar obras en humedales y no lo logró. Citada por Fiscalía por Metro (investigación activa). <strong>Hechos verificables</strong>.</div>
+      <div class="note warn">Comportamiento político: múltiples aliados (incluyendo Fajardo y miembros del Polo) la señalan de "juego doble" y publicidad de causa sobre sustancia. <strong>Declaraciones verificables</strong>, aunque el juicio sobre su validez es más subjetivo.</div>
+
+      <div class="sec-title">5 · Coherencia Ideológica</div>
+      <div class="coherence-block">
+        <div class="coherence-score" style="color: var(--accent);">6.0</div>
+        <div class="coherence-text">
+          <strong>Coherencia media.</strong> Su bandera anticorrupción es genuina y consistente desde 2006. Sin embargo, hay contradicciones verificadas entre promesas y hechos en la Alcaldía. Apoyó a Petro en 2022, luego lo criticó duramente — posición defensible si sincera, pero el timing fue políticamente conveniente. Felicitó a Rodolfo Hernández por "anticorrupción" en 2022, luego lo criticó. <strong>Hecho verificable</strong>. Patrón de alianzas según conveniencia política señalado por varios actores de distinto espectro.
+        </div>
+      </div>
+
+      <div class="sec-title">6 · Auditoría de Credibilidad</div>
+      <div class="note warn">Investigada por Fiscalía por presuntas irregularidades en Metro de Bogotá. Investigación activa al momento de redacción. <strong>Hecho verificable</strong>.</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-item-label">Honestidad percibida</div><div class="score-item-val" style="color:var(--accent);">6/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:60%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Coherencia histórica</div><div class="score-item-val" style="color:var(--accent);">6/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:60%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad técnica</div><div class="score-item-val" style="color:var(--accent);">6.5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:65%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Capacidad de ejecución</div><div class="score-item-val" style="color:var(--accent);">6/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:60%; background:var(--accent)"></div></div></div>
+        <div class="score-item"><div class="score-item-label">Riesgo incumplimiento</div><div class="score-item-val" style="color:var(--orange);">6.5/10</div><div class="score-item-bar"><div class="score-item-fill" style="width:65%; background:var(--orange)"></div></div></div>
+      </div>
+
+      <div class="sec-title">7 · Probabilidad de Cumplimiento</div>
+      <div class="prob-row"><div class="prob-label">% intentará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:70%; background:var(--green)"></div></div><div class="prob-val">70%</div></div>
+      <div class="prob-row"><div class="prob-label">% logrará cumplir</div><div class="prob-bar"><div class="prob-fill" style="width:40%; background:var(--orange)"></div></div><div class="prob-val">40%</div></div>
+      <ul class="obstacle-list">
+        <li>Sin partido nacional consolidado. "Imparables" es más movimiento que máquina electoral.</li>
+        <li>Historial de incumplimiento de promesas específicas en Alcaldía — patrón verificable.</li>
+        <li>Programa 2026 con varios vacíos (energía, política exterior, financiamiento).</li>
+        <li>Investigación de Fiscalía podría interferir con agenda de gobierno.</li>
+        <li>El ajuste fiscal de 4 puntos del PIB no está incorporado explícitamente en su plan.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMPARACIÓN FINAL ══ -->
+<div class="section" id="comparacion">
+
+  <div class="context-banner">
+    <h3>Nota Metodológica</h3>
+    <p>Calificaciones basadas en evidencia verificable: trayectoria documentada, gestiones auditadas, cumplimiento de promesas anteriores, coherencia de discurso y viabilidad fiscal en el contexto de crisis señalado por el CARF. <strong>No se penaliza por ideología. Se penaliza por promesas sin financiamiento, inconsistencias verificadas y ausencia de historial ejecutivo.</strong></p>
+  </div>
+
+  <div class="sec-title">Tabla Comparativa General</div>
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Candidato</th>
+        <th>Viabilidad Fiscal</th>
+        <th>Credibilidad</th>
+        <th>Coherencia</th>
+        <th>Capacidad Ejecución</th>
+        <th>Riesgo Incumpl.</th>
+        <th>SCORE /10</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="dot" style="background:var(--fajardo)"></span>Sergio Fajardo</td>
+        <td><span class="tag tag-yellow">Moderada-Alta</span></td>
+        <td><span class="tag tag-green">8.5</span></td>
+        <td><span class="tag tag-green">8.0</span></td>
+        <td><span class="tag tag-green">8.0</span></td>
+        <td><span class="tag tag-green">Bajo</span></td>
+        <td style="color:var(--fajardo); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:16px;">6.8</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--paloma)"></span>Paloma Valencia</td>
+        <td><span class="tag tag-orange">Tensa</span></td>
+        <td><span class="tag tag-yellow">7.0</span></td>
+        <td><span class="tag tag-yellow">7.5</span></td>
+        <td><span class="tag tag-yellow">5.0</span></td>
+        <td><span class="tag tag-orange">Medio</span></td>
+        <td style="color:var(--paloma); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:16px;">6.1</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--claudia)"></span>Claudia López</td>
+        <td><span class="tag tag-orange">Media</span></td>
+        <td><span class="tag tag-yellow">6.0</span></td>
+        <td><span class="tag tag-yellow">6.0</span></td>
+        <td><span class="tag tag-yellow">6.0</span></td>
+        <td><span class="tag tag-orange">Medio-Alto</span></td>
+        <td style="color:var(--claudia); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:16px;">5.8</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--cepeda)"></span>Iván Cepeda</td>
+        <td><span class="tag tag-red">Baja</span></td>
+        <td><span class="tag tag-yellow">7.0</span></td>
+        <td><span class="tag tag-green">8.5</span></td>
+        <td><span class="tag tag-red">3.0</span></td>
+        <td><span class="tag tag-red">Alto</span></td>
+        <td style="color:var(--cepeda); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:16px;">4.9</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--espriella)"></span>De la Espriella</td>
+        <td><span class="tag tag-red">Muy baja</span></td>
+        <td><span class="tag tag-red">4.5</span></td>
+        <td><span class="tag tag-orange">4.5</span></td>
+        <td><span class="tag tag-red">3.0</span></td>
+        <td><span class="tag tag-red">Muy alto</span></td>
+        <td style="color:var(--espriella); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:16px;">4.2</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="sec-title">Veredictos Finales</div>
+  <div class="verdict-grid">
+    <div class="verdict-card">
+      <div class="verdict-card-label">🏆 Mejor plan técnicamente viable</div>
+      <div class="verdict-card-winner" style="color:var(--fajardo)">Sergio Fajardo</div>
+      <div class="verdict-card-why">El único con propuestas financiadas con mayor rigor, historial de ejecución verificable y coherencia entre discurso y acción. Sin promesas matemáticamente imposibles.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-card-label">✓ Mayor probabilidad de cumplimiento</div>
+      <div class="verdict-card-winner" style="color:var(--fajardo)">Sergio Fajardo</div>
+      <div class="verdict-card-why">90% de intentar cumplir / 55% de lograrlo. Único candidato con dos gestiones ejecutivas limpias y auditadas. Modelo coherente, sin favores políticos, historial de gobernanza.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-card-label">◈ Mejor historial de coherencia</div>
+      <div class="verdict-card-winner" style="color:var(--cepeda)">Iván Cepeda</div>
+      <div class="verdict-card-why">50 años de política de izquierda sin giros oportunistas detectables. Alta coherencia ideológica aunque baja viabilidad de ejecución. Nota: 8.5 en coherencia, 3.0 en ejecución.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-card-label">⚠ Mayor riesgo de populismo</div>
+      <div class="verdict-card-winner" style="color:var(--espriella)">Abelardo de la Espriella</div>
+      <div class="verdict-card-why">Crecimiento 7%, territorio en 90 días, top 25 del mundo, 10 megacárceles simultáneas. Promesas sin base técnica, sin trayectoria, sin bancada. Patrón de outsider populista documentado.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-card-label">✗ Mayor riesgo de incumplimiento</div>
+      <div class="verdict-card-winner" style="color:var(--espriella)">Abelardo de la Espriella</div>
+      <div class="verdict-card-why">15% probabilidad de cumplimiento. Cero historial ejecutivo. Promesas técnicamente imposibles. Sin partido establecido. El candidato con mayor brecha entre promesas y capacidad real de entrega.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-card-label">◉ Propuesta fiscal más responsable</div>
+      <div class="verdict-card-winner" style="color:var(--paloma)">Paloma Valencia</div>
+      <div class="verdict-card-why">El plan es el más explícito en reconocer la crisis y proponer un ajuste específico ($50 billones). La tensión bajar impuestos + ajustar gasto sigue irresuelta pero el diagnóstico es el más honesto del espectro de derecha.</div>
+    </div>
+  </div>
+
+  <div class="sec-title">Ranking General Basado en Evidencia</div>
+  <ul class="ranking-list">
+    <li class="ranking-item">
+      <div class="ranking-num">1</div>
+      <div>
+        <div class="ranking-name" style="color:var(--fajardo)"><span class="dot" style="background:var(--fajardo)"></span>Sergio Fajardo</div>
+        <div class="ranking-reason">Único con historial ejecutivo doble verificable. Coherencia alta. Propuestas viables. Límite: bajo en encuestas (3%), lo que reduce su viabilidad política real.</div>
+      </div>
+      <div class="ranking-score">6.8</div>
+    </li>
+    <li class="ranking-item">
+      <div class="ranking-num">2</div>
+      <div>
+        <div class="ranking-name" style="color:var(--paloma)"><span class="dot" style="background:var(--paloma)"></span>Paloma Valencia</div>
+        <div class="ranking-reason">Coherente ideológicamente. Diagnóstico fiscal honesto. Pero promesas contradictorias (bajar impuestos + megaajuste) y sin experiencia ejecutiva propia.</div>
+      </div>
+      <div class="ranking-score">6.1</div>
+    </li>
+    <li class="ranking-item">
+      <div class="ranking-num">3</div>
+      <div>
+        <div class="ranking-name" style="color:var(--claudia)"><span class="dot" style="background:var(--claudia)"></span>Claudia López</div>
+        <div class="ranking-reason">Experiencia ejecutiva real en Bogotá (la más grande del país). Anticorrupción verificable. Inconsistencias en promesas y señalamientos múltiples de aliados que son preocupantes.</div>
+      </div>
+      <div class="ranking-score">5.8</div>
+    </li>
+    <li class="ranking-item">
+      <div class="ranking-num">4</div>
+      <div>
+        <div class="ranking-name" style="color:var(--cepeda)"><span class="dot" style="background:var(--cepeda)"></span>Iván Cepeda</div>
+        <div class="ranking-reason">Alta coherencia ideológica pero expansión fiscal imposible en contexto de crisis. Cero experiencia ejecutiva. Constituyente bloquea gobernabilidad. Continuidad de lo que no funcionó en Paz Total.</div>
+      </div>
+      <div class="ranking-score">4.9</div>
+    </li>
+    <li class="ranking-item">
+      <div class="ranking-num">5</div>
+      <div>
+        <div class="ranking-name" style="color:var(--espriella)"><span class="dot" style="background:var(--espriella)"></span>Abelardo de la Espriella</div>
+        <div class="ranking-reason">Mayor riesgo por: promesas técnicamente imposibles, cero historial ejecutivo, coherencia baja, populismo verificable. La fórmula Restrepo mejora marginalmente pero no resuelve las contradicciones del candidato.</div>
+      </div>
+      <div class="ranking-score">4.2</div>
+    </li>
+  </ul>
+
+  <div class="note warn" style="margin-top:28px;">IMPORTANTE: Este ranking evalúa viabilidad técnica, coherencia e historial. <strong>No es recomendación de voto.</strong> Un candidato puede tener un plan mediocre y ganar la elección, implementar parcialmente sus propuestas y generar resultados positivos. La política no es solo un problema técnico. Las encuestas a la primera vuelta del 31 de mayo ubican a Cepeda, De la Espriella y Valencia como líderes — los tres con los scores más bajos en este análisis técnico.</div>
+
+  <div class="sources">
+    <h3>Fuentes Consultadas</h3>
+    <ul>
+      <li>📄 Planes de gobierno oficiales registrados ante el CNE (Cepeda, Valencia, De la Espriella, Fajardo, López)</li>
+      <li>📰 La Silla Vacía — "Las propuestas de los candidatos evaluadas por expertos" (Mayo 6, 2026)</li>
+      <li>📰 Razón Pública — "Análisis comparativo de las propuestas" (Mayo 10, 2026)</li>
+      <li>📰 El Espectador — Perfiles y propuestas de los 5 candidatos (Mayo 2026)</li>
+      <li>📰 Infobae Colombia — Propuestas económicas y contexto fiscal (Mayo 26, 2026)</li>
+      <li>📰 Semana — Perfiles, propuestas y trayectorias (Mayo 2026)</li>
+      <li>📰 Bloomberg Línea — Perfiles de Valencia y De la Espriella</li>
+      <li>📰 El Colombiano — Gestión Fajardo en Medellín y Antioquia / CARF informes</li>
+      <li>📄 CARF — Informe déficit fiscal 2025-2026 (Marzo-Abril 2026)</li>
+      <li>📰 Colombiacheck — Verificación de afirmaciones de Fajardo</li>
+      <li>📰 CNN Español — Perfil Cepeda / Gestión López en Bogotá</li>
+      <li>📰 CIDOB — Perfil Claudia López</li>
+      <li>🌐 Wikipedia — Perfiles: Cepeda, Fajardo, López</li>
+      <li>🌐 palomapresidente.com.co — Plan integrado de gobierno oficial</li>
+      <li>🌐 presidenteivancepeda.com — Portal oficial campaña</li>
+    </ul>
+  </div>
+
+</div>
+
+</div><!-- /main -->
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Animate score bars on visibility
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.score-item-fill, .prob-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0%';
+          setTimeout(() => bar.style.width = w, 100);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.candidate-body').forEach(el => observer.observe(el));
+});
+</script>
+</body>
+</html>
